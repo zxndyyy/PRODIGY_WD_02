@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+ <title>Stopwatch App</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #3badc6;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+
+        .stopwatch {
+            text-align: center;
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .display {
+            font-size: 2em;
+            margin-bottom: 20px;
+        }
+
+        .controls button {
+            margin: 5px;
+            padding: 10px 20px;
+            font-size: 1em;
+        }
+
+        #laps {
+            text-align: left;
+        }
+    </style>
+</head>
+<body>
+    <div class="stopwatch">
+        <h1>Stopwatch</h1>
+        <div class="display">00:00:00.000</div>
+        <div class="controls">
+            <button id="start">Start</button>
+            <button id="pause">Pause</button>
+            <button id="reset">Reset</button>
+            <button id="lap">Lap</button>
+        </div>
+        <ul id="laps"></ul>
+    </div>
+    <script>
+        let startTime;
+        let updatedTime;
+        let difference;
+        let interval;
+        let running = false;
+
+        function startTimer() {
+            if (!running) {
+                startTime = new Date().getTime();
+                interval = setInterval(runTimer, 10);
+                running = true;
+            }
+        }
+
+        function runTimer() {
+            updatedTime = new Date().getTime();
+            difference = updatedTime - startTime;
+            let hours = Math.floor(difference / 3600000);
+            let minutes = Math.floor((difference % 3600000) / 60000);
+            let seconds = Math.floor((difference % 60000) / 1000);
+            let milliseconds = Math.floor((difference % 1000));
+
+            document.querySelector('.display').innerHTML = 
+                (hours < 10 ? "0" : "") + hours + ":"
+                + (minutes < 10 ? "0" : "") + minutes + ":"
+                + (seconds < 10 ? "0" : "") + seconds + "."
+                + (milliseconds < 100 ? "0" : "") + (milliseconds < 10 ? "0" : "") + milliseconds;
+        }
+
+        function pauseTimer() {
+            if (running) {
+                clearInterval(interval);
+                running = false;
+            }
+        }
+
+        function resetTimer() {
+            clearInterval(interval);
+            running = false;
+            document.querySelector('.display').innerHTML = "00:00:00.000";
+            document.querySelector('#laps').innerHTML = "";
+        }
+
+        function lapTime() {
+            let lap = document.createElement('li');
+            lap.innerHTML = document.querySelector('.display').innerHTML;
+            document.querySelector('#laps').appendChild(lap);
+        }
+
+        document.getElementById('start').addEventListener('click', startTimer);
+        document.getElementById('pause').addEventListener('click', pauseTimer);
+        document.getElementById('reset').addEventListener('click', resetTimer);
+        document.getElementById('lap').addEventListener('click', lapTime);
+    </script>
+</body>
+</html>
